@@ -1,5 +1,5 @@
 /* Responsável por rotas que serão utlizadas em todo projeto */
-const { Router } = require('express');
+import { Router } from 'express';
 
 const routes = new Router();
 
@@ -8,4 +8,4 @@ routes.get('/', (req, res) => {
 });
 
 // Será utilizado na classe App, para configurar rotas disponíveis
-module.exports = routes;
+export default routes;

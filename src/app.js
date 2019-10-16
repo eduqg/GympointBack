@@ -1,6 +1,6 @@
 /* Classe responsável por configurar middlewares e rotas de requisição */
-const express = require('express');
-const routes = require('./routes');
+import express from 'express';
+import routes from './routes';
 
 class App {
   constructor() {
@@ -21,4 +21,4 @@ class App {
 }
 
 // Exportação apenas do server, será usado em server.js
-module.exports = new App().server;
+export default new App().server;
