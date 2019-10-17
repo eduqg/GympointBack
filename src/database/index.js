@@ -2,12 +2,13 @@ import Sequelize from 'sequelize';
 
 // Usuário definido do meu Mvc
 import User from '../app/models/User';
+import Student from '../app/models/Student';
 
 // Configurações de senha, porta, host do meu banco de dados
 import databaseConfig from '../config/database';
 
 // Minhas models devem ser estar nesse array para que controllers acessem
-const models = [User];
+const models = [User, Student];
 
 class Database {
   constructor() {
