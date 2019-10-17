@@ -21,5 +21,7 @@ routes.put('/users', UserController.update);
 // Cadastro de Alunos
 routes.post('/students', StudentController.store);
 
+routes.put('/students/:id', StudentController.update);
+
 // Será utilizado na classe App, para configurar rotas disponíveis
 export default routes;
