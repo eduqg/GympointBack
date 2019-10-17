@@ -25,6 +25,12 @@ class User extends Model {
         user.password_hash = await bcrypt.hash(user.password, 8);
       }
     });
+    return this;
+  }
+
+  checkPassword(password) {
+    // Verifica se senha passada (que é transformada em hash) confere com a hash do banco de dados
+    return bcrypt.compare(password, this.password_hash);
   }
 }
 
