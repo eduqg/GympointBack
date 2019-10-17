@@ -28,8 +28,8 @@ class User extends Model {
     return this;
   }
 
+  // Verifica se senha passada (que é transformada em hash) confere com a hash do banco de dados
   checkPassword(password) {
-    // Verifica se senha passada (que é transformada em hash) confere com a hash do banco de dados
     return bcrypt.compare(password, this.password_hash);
   }
 }
