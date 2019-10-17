@@ -1,6 +1,9 @@
 /* Classe responsável por configurar middlewares e rotas de requisição */
 import express from 'express';
+
 import routes from './routes';
+// Importa toda minha configuração do banco de dados
+import './database';
 
 class App {
   constructor() {
