@@ -4,6 +4,7 @@ import { Router } from 'express';
 const routes = new Router();
 
 routes.get('/', (req, res) => {
+  console.log(req);
   return res.json({ hello: 'World' });
 });
 
