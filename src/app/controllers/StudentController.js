@@ -27,14 +27,14 @@ class StudentController {
     }
 
     // Verifica duplicação de email
-    const studentExists = await User.findOne({
+    const studentExists = await Student.findOne({
       where: { email: req.body.email },
     });
     if (studentExists) {
       return res.status(400).json({ error: 'Student already exists.' });
     }
 
-    const { id, name, email, peso, idade, altura } = await User.create(
+    const { id, name, email, peso, idade, altura } = await Student.create(
       req.body
     );
 
