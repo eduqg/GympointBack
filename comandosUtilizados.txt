@@ -116,6 +116,13 @@ yarn sequelize db:migrate:undo = rollback
 
 yarn sequelize db:migrate:undo:all
 
+Seeds
+
+yarn sequelize seed:generate --name admin-user
+yarn sequelize db:seed --seed admin-user
+yarn sequelize db:seed:all
+yarn sequelize db:seed
+
 -> yarn add jsonwebtoken
 
 -> yarn add bcryptjs

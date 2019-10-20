@@ -3,6 +3,11 @@ import * as Yup from 'yup';
 import Plan from '../models/Plan';
 
 class PlansController {
+  async index(req, res) {
+    const plans = await Plan.findAll();
+    return res.json(plans);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       title: Yup.string().required(),
@@ -33,6 +38,43 @@ class PlansController {
     });
   }
 
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string(),
+      duration: Yup.number(),
+      price: Yup.number(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails.' });
+    }
+
+    const plan = await Plan.findByPk(req.params.id)
+
+    // Se title no update for igual = false
+    if (plan.title !== req.body.title) {
+      const checkPlanTitles = await Plan.findOne({ where: { title: req.body.title } });
+      if (checkPlanTitles) {
+        return res.status(400).json({ error: 'Plan name already has been taken.' });
+      }
+    }
+
+    const { id, title, duration, price } = await plan.update(req.body);
+
+    return res.json({
+      id,
+      title,
+      duration,
+      price,
+    });
+  }
+
+  async delete(req, res) {
+    const {id} = req.headers;
+    const response = await Plan.destroy({where: {id}});
+
+    return res.json(response);
+  }
 }
 
 export default new PlansController();
