@@ -48,6 +48,11 @@ class StudentController {
     });
   }
 
+  async index(req, res) {
+    const students = await Student.findAll();
+    return res.json(students);
+  }
+
   async update(req, res) {
     const { id } = req.params;
     const { email } = req.body;

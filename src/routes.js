@@ -24,6 +24,7 @@ routes.put('/users', UserController.update);
 // Alunos
 routes.post('/students', StudentController.store);
 routes.put('/students/:id', StudentController.update);
+routes.get('/students', StudentController.index);
 
 // Planos
 routes.get('/plans', PlansController.index);
@@ -33,6 +34,9 @@ routes.delete('/plans', PlansController.delete);
 
 // Matrículas
 routes.post('/registrations', RegistrationsController.store);
+routes.get('/registrations', RegistrationsController.index);
+routes.put('/registrations/:id', RegistrationsController.update);
+routes.delete('/registrations/:id', RegistrationsController.delete);
 
 // Será utilizado na classe App, para configurar rotas disponíveis
 export default routes;

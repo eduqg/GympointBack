@@ -22,7 +22,6 @@ class RegistrationsController {
 
     const { start_date, student_id, plan_id } = req.body;
 
-
     const planRegistered = await Registration.findOne({
       where: { student_id: student_id }
     });
@@ -42,22 +41,14 @@ class RegistrationsController {
       }
     };
 
-
     const plan = await Plan.findByPk(plan_id);
     const price_calculated = plan.duration * plan.price;
 
     let end_date_calculated = addMonths(parseISO(start_date), plan.duration);
-    console.log(end_date_calculated);
     end_date_calculated = format(end_date_calculated, "yyyy-MM-dd'T'hh:mm:ss", {
       timeZone: 'America/Sao_Paulo'
     });
-    console.log({
-      start_date,
-      end_date: end_date_calculated,
-      price: price_calculated,
-      student_id,
-      plan_id,
-    })
+
     const registration = await Registration.create({
       start_date,
       end_date: end_date_calculated,
@@ -67,6 +58,74 @@ class RegistrationsController {
     });
 
     return res.json(registration);
+  }
+
+  async index(req, res) {
+    const registrations = await Registration.findAll();
+    return res.json(registrations);
+  }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      start_date: Yup.date().required(),
+      end_date: Yup.date(),
+      price: Yup.number(),
+      student_id: Yup.number().required(),
+      plan_id: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation schema fails.' });
+    }
+
+
+    const { start_date, student_id, plan_id } = req.body;
+
+    const register = await Registration.findByPk(req.params.id);
+    // Verifica se usuário já possui algum registro
+    if (!register) {
+      return res.status(400).json({ error: 'Does not exist this registration' });
+    };
+
+    if (req.body.student_id !== register.student_id) {
+      return res.status(400).json({ error: 'Cannot update register of another user.' });
+    }
+
+    if (isBefore(parseISO(start_date), new Date())) {
+      return res.status(400).json({ error: 'Cannot update one registration to start before today.' });
+    }
+
+    const plan = await Plan.findByPk(plan_id);
+    const price_calculated = plan.duration * plan.price;
+
+    let end_date_calculated = addMonths(parseISO(start_date), plan.duration);
+    end_date_calculated = format(end_date_calculated, "yyyy-MM-dd'T'hh:mm:ss", {
+      timeZone: 'America/Sao_Paulo'
+    });
+    console.log({
+      start_date,
+      end_date: end_date_calculated,
+      price: price_calculated,
+      student_id,
+      plan_id,
+    });
+
+    const registration = await register.update({
+      start_date,
+      end_date: end_date_calculated,
+      price: price_calculated,
+      student_id,
+      plan_id,
+    });
+
+    return res.json(registration);
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+    const response = await Registration.destroy({ where: { id } });
+
+    return res.json(response);
   }
 
   // async cancel(req, res) {
