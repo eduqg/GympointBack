@@ -5,6 +5,7 @@ import pt from 'date-fns/locale/pt-BR';
 import Registration from '../models/Registration';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
+import Mail from '../../lib/Mail';
 
 class RegistrationsController {
   async store(req, res) {
@@ -57,6 +58,14 @@ class RegistrationsController {
       plan_id,
     });
 
+    const student = await Student.findByPk(student_id);
+
+    await Mail.sendMail({
+      to: `${student.name} <${student.email}>`,
+      subject: 'Registro na Gympoint!',
+      text: 'Olá novo aluno!',
+    });
+
     return res.json(registration);
   }
 
@@ -101,13 +110,6 @@ class RegistrationsController {
     let end_date_calculated = addMonths(parseISO(start_date), plan.duration);
     end_date_calculated = format(end_date_calculated, "yyyy-MM-dd'T'hh:mm:ss", {
       timeZone: 'America/Sao_Paulo'
-    });
-    console.log({
-      start_date,
-      end_date: end_date_calculated,
-      price: price_calculated,
-      student_id,
-      plan_id,
     });
 
     const registration = await register.update({
