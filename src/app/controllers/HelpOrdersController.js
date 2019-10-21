@@ -1,7 +1,11 @@
 import * as Yup from 'yup';
+import { format } from 'date-fns-tz';
 
 import Student from '../models/Student';
 import HelpOrder from '../models/HelpOrder';
+
+import Mail from '../../lib/Mail';
+import pt from 'date-fns/locale/pt-BR';
 
 class HelpOrdersController {
 
@@ -55,6 +59,24 @@ class HelpOrdersController {
     });
 
     await helpOrder.save();
+
+    const student = await Student.findByPk(id);
+
+    await Mail.sendMail({
+      to: `${student.name} <${student.email}>`,
+      subject: 'Pergunta respondida!',
+      template: 'helporderanswer',
+      context: {
+        provider: student.name,
+        question: helpOrder.question,
+        answer: helpOrder.answer,
+        answer_at: format(
+          helpOrder.answer_at,
+          "'dia' dd 'de' MMMM', às' H:mm'h'",
+          { locale: pt }
+        ),
+      },
+    });
 
     return res.json(response);
   }
