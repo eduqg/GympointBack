@@ -7,6 +7,7 @@ import StudentController from './app/controllers/StudentController';
 import PlansController from './app/controllers/PlansController';
 import RegistrationsController from './app/controllers/RegistrationsController';
 import CheckinsController from './app/controllers/CheckinsController';
+import HelpOrdersController from './app/controllers/HelpOrdersController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -15,6 +16,7 @@ const routes = new Router();
 
 // Criação de sessão com retorno de token
 routes.post('/sessions', SessionController.store);
+routes.post('/students/:id/help-orders', HelpOrdersController.store_question);
 
 routes.use(authMiddleware);
 
@@ -43,6 +45,13 @@ routes.delete('/registrations/:id', RegistrationsController.delete);
 // Checkins
 routes.post('/checkins', CheckinsController.store);
 routes.get('/checkins', CheckinsController.index);
+
+// Help Orders
+routes.post('/help-orders/:id/answer', HelpOrdersController.store_answer);
+routes.get('/help-orders', HelpOrdersController.index);
+routes.get('/help-orders-not-answered', HelpOrdersController.index_not_answered);
+routes.get('/students/:id/help-orders', HelpOrdersController.questions_student);
+// reoutes.get('/students/:id/help-orders', HelpOrdersController.index);
 
 // Será utilizado na classe App, para configurar rotas disponíveis
 export default routes;

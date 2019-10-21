@@ -6,12 +6,13 @@ import Student from '../app/models/Student';
 import Plan from '../app/models/Plan';
 import Registration from '../app/models/Registration'
 import Checkin from '../app/models/Checkin';
+import HelpOrder from '../app/models/HelpOrder';
 
 // Configurações de senha, porta, host do meu banco de dados
 import databaseConfig from '../config/database';
 
 // Minhas models devem ser estar nesse array para que controllers acessem
-const models = [User, Student, Plan, Registration, Checkin];
+const models = [User, Student, Plan, Registration, Checkin, HelpOrder];
 
 class Database {
   constructor() {
