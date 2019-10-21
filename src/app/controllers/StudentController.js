@@ -1,6 +1,8 @@
 import * as Yup from 'yup';
-
+import { startOfDate, subDays, parseISO, isBefore, format, subHours, addMonths, parseFromTimeZone } from 'date-fns';
+import { format } from 'date-fns-tz';
 import Student from '../models/Student';
+import Checkin from '../models/Checkin';
 
 class StudentController {
   async store(req, res) {
@@ -79,6 +81,18 @@ class StudentController {
       peso,
       altura,
     });
+  }
+
+  async checkins(req, res) {
+    const { id } = req.params;
+
+    const student = await Student.findByPk(id);
+
+    const checkins = await Checkin.findAll({
+      where: { student_id: student.id, }
+    });
+
+    return res.json(checkins);
   }
 }
 

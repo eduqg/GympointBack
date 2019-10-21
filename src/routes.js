@@ -6,6 +6,7 @@ import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
 import PlansController from './app/controllers/PlansController';
 import RegistrationsController from './app/controllers/RegistrationsController';
+import CheckinsController from './app/controllers/CheckinsController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -25,6 +26,7 @@ routes.put('/users', UserController.update);
 routes.post('/students', StudentController.store);
 routes.put('/students/:id', StudentController.update);
 routes.get('/students', StudentController.index);
+routes.get('/students/:id/checkins', StudentController.checkins);
 
 // Planos
 routes.get('/plans', PlansController.index);
@@ -37,6 +39,10 @@ routes.post('/registrations', RegistrationsController.store);
 routes.get('/registrations', RegistrationsController.index);
 routes.put('/registrations/:id', RegistrationsController.update);
 routes.delete('/registrations/:id', RegistrationsController.delete);
+
+// Checkins
+routes.post('/checkins', CheckinsController.store);
+routes.get('/checkins', CheckinsController.index);
 
 // Será utilizado na classe App, para configurar rotas disponíveis
 export default routes;
