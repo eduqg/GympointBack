@@ -81,7 +81,16 @@ class RegistrationsController {
   }
 
   async index(req, res) {
-    const registrations = await Registration.findAll();
+    const allRegistrations = await Registration.findAll();
+
+    const registrations = allRegistrations.map(registration => {
+      isBefore(registration.end_date, new Date())
+        ? registration.active = false
+        : registration.active = true;
+
+      return registration;
+    });
+
     return res.json(registrations);
   }
 
