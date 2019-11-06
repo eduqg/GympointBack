@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import * as Yup from 'yup';
 import { startOfDate, subDays, parseISO, isBefore, format, subHours, addMonths, parseFromTimeZone } from 'date-fns';
 import { format } from 'date-fns-tz';
@@ -51,7 +52,11 @@ class StudentController {
   }
 
   async index(req, res) {
-    const students = await Student.findAll();
+    const name = req.query.q;
+    const students = await (name
+      ? Student.findAll({ where: { name: { [Sequelize.Op.iLike]: name } } })
+      : Student.findAll())
+
     return res.json(students);
   }
 
