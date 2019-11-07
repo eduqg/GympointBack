@@ -11,10 +11,8 @@ class PlansController {
   async store(req, res) {
     const schema = Yup.object().shape({
       title: Yup.string().required(),
-      duration: Yup.number()
-        .required(),
-      price: Yup.number()
-        .required(),
+      duration: Yup.number().required(),
+      price: Yup.number().required(),
     });
 
     // Valido schema
@@ -49,13 +47,17 @@ class PlansController {
       return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    const plan = await Plan.findByPk(req.params.id)
+    const plan = await Plan.findByPk(req.params.id);
 
     // Se title no update for igual = false
     if (plan.title !== req.body.title) {
-      const checkPlanTitles = await Plan.findOne({ where: { title: req.body.title } });
+      const checkPlanTitles = await Plan.findOne({
+        where: { title: req.body.title },
+      });
       if (checkPlanTitles) {
-        return res.status(400).json({ error: 'Plan name already has been taken.' });
+        return res
+          .status(400)
+          .json({ error: 'Plan name already has been taken.' });
       }
     }
 
@@ -70,8 +72,8 @@ class PlansController {
   }
 
   async delete(req, res) {
-    const {id} = req.headers;
-    const response = await Plan.destroy({where: {id}});
+    const { id } = req.headers;
+    const response = await Plan.destroy({ where: { id } });
 
     return res.json(response);
   }

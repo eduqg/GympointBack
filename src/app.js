@@ -1,6 +1,6 @@
 /* Classe responsável por configurar middlewares e rotas de requisição */
 import express from 'express';
-
+import cors from 'cors';
 import routes from './routes';
 // Importa toda minha configuração do banco de dados
 import './database';
@@ -13,6 +13,7 @@ class App {
   }
 
   middlewares() {
+    this.server.use(cors());
     // Toda requisição vai usar json
     this.server.use(express.json());
   }

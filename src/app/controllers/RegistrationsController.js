@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { startOfDate, parseISO, isBefore, format, subHours, addMonths, parseFromTimeZone } from 'date-fns';
+import { startOfDate, parseISO, isBefore, format, subHours, addMonths, parseFromTimeZone, setHours, setMinutes } from 'date-fns';
 import { format } from 'date-fns-tz';
 import pt from 'date-fns/locale/pt-BR';
 import Registration from '../models/Registration';
@@ -22,13 +22,22 @@ class RegistrationsController {
     }
 
     const { start_date, student_id, plan_id } = req.body;
+    console.log('----------------');
+    console.log(start_date);
+    const received_date = parseISO(start_date);
+
+    // format(start_date, "yyyy-MM-dd'T'hh:mm:ss", {
+    //   timeZone: 'America/Sao_Paulo'
+    // });
+    console.log(received_date);
+    console.log('----------------');
 
     const planRegistered = await Registration.findOne({
       where: { student_id: student_id }
     });
 
     // Verifica se plano foi criado para começar numa data passada
-    if (isBefore(parseISO(start_date), new Date())) {
+    if (isBefore(parseISO(start_date), setMinutes(setHours(new Date(), 0), 0))) {
       return res.status(400).json({ error: 'Cannot create one registration to start in the past.' });
     }
 
@@ -81,7 +90,48 @@ class RegistrationsController {
   }
 
   async index(req, res) {
-    const allRegistrations = await Registration.findAll();
+    const allRegistrations = await Registration.findAll({
+      include: [
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title', 'duration', 'price']
+        },
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
+        }
+      ]
+    });
+
+    const registrations = allRegistrations.map(registration => {
+      isBefore(registration.end_date, new Date())
+        ? registration.active = false
+        : registration.active = true;
+
+      return registration;
+    });
+
+    return res.json(registrations);
+  }
+
+  async getone(req, res) {
+    const allRegistrations = await Registration.findAll({
+      where: { id: req.params.id },
+      include: [
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title', 'duration', 'price']
+        },
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
+        }
+      ]
+    });
 
     const registrations = allRegistrations.map(registration => {
       isBefore(registration.end_date, new Date())
@@ -116,9 +166,9 @@ class RegistrationsController {
       return res.status(400).json({ error: 'Does not exist this registration' });
     };
 
-    if (req.body.student_id !== register.student_id) {
-      return res.status(400).json({ error: 'Cannot update register of another user.' });
-    }
+    // if (req.body.student_id !== register.student_id) {
+    //   return res.status(400).json({ error: 'Cannot update register of another user.' });
+    // }
 
     if (isBefore(parseISO(start_date), new Date())) {
       return res.status(400).json({ error: 'Cannot update one registration to start before today.' });

@@ -21,7 +21,7 @@ class SessionController {
       return res.status(401).jaon({ error: 'Password does not match' });
     }
 
-    const { id, name } = user;
+    const { id, name, admin } = user;
 
     // Retorna token para o front
     // jwt.sign(payload, string eg md5, configurações)
@@ -30,6 +30,7 @@ class SessionController {
         id,
         name,
         email,
+        admin,
       },
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
