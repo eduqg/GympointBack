@@ -4,8 +4,26 @@ import Plan from '../models/Plan';
 
 class PlansController {
   async index(req, res) {
-    const plans = await Plan.findAll();
-    return res.json(plans);
+    let data = [];
+    const { id } = req.params;
+
+    if (id) {
+      data = await Plan.findAll({
+        where: { id },
+      });
+    } else {
+      data = await Plan.findAll();
+    }
+
+    if (!data[0]) {
+      return res.status(400).json({ error: "Plano doesn't exist." });
+    }
+
+    return res.json(data);
+  }
+
+  async getone(req, res) {
+    return res.json(plan);
   }
 
   async store(req, res) {
