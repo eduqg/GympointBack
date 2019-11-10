@@ -93,8 +93,8 @@ class RegistrationsController {
 
     if (page) {
       allRegistrations = await Registration.findAll({
-        limit: 2,
-        offset: (page - 1) * 2,
+        limit: 5,
+        offset: (page - 1) * 5,
         include: [
           {
             model: Plan,

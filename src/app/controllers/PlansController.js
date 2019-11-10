@@ -17,8 +17,8 @@ class PlansController {
 
     if (page) {
       data = await Plan.findAll({
-        limit: 2,
-        offset: (page - 1) * 2,
+        limit: 5,
+        offset: (page - 1) * 5,
       });
       return res.json(data);
     }

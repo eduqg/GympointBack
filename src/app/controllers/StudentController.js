@@ -64,8 +64,8 @@ class StudentController {
     if (page) {
       students = await Student.findAll({
         where: {},
-        limit: 2,
-        offset: (page - 1) * 2,
+        limit: 5,
+        offset: (page - 1) * 5,
       });
     } else if (name) {
       students = await Student.findAll({
