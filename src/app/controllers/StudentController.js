@@ -51,17 +51,29 @@ class StudentController {
   }
 
   async index(req, res) {
+    const { page } = req.query;
     const { id } = req.params;
     const name = req.query.q;
+    let students = [];
 
     if (id) {
       const data = await Student.findByPk(id);
       return res.json(data);
     }
 
-    const students = await (name
-      ? Student.findAll({ where: { name: { [Sequelize.Op.iLike]: name } } })
-      : Student.findAll());
+    if (page) {
+      students = await Student.findAll({
+        where: {},
+        limit: 2,
+        offset: (page - 1) * 2,
+      });
+    } else if (name) {
+      students = await Student.findAll({
+        where: { name: { [Sequelize.Op.iLike]: name } },
+      });
+    } else {
+      students = await Student.findAll();
+    }
 
     return res.json(students);
   }

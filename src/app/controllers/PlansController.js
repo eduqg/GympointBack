@@ -6,14 +6,24 @@ class PlansController {
   async index(req, res) {
     let data = [];
     const { id } = req.params;
+    const { page } = req.query;
 
     if (id) {
       data = await Plan.findAll({
         where: { id },
       });
-    } else {
-      data = await Plan.findAll();
+      return res.json(data);
     }
+
+    if (page) {
+      data = await Plan.findAll({
+        limit: 2,
+        offset: (page - 1) * 2,
+      });
+      return res.json(data);
+    }
+
+    data = await Plan.findAll();
 
     if (!data[0]) {
       return res.status(400).json({ error: "Plano doesn't exist." });

@@ -83,9 +83,23 @@ class HelpOrdersController {
   async index(req, res) {
     let help = [];
     const { id } = req.params;
+    const { page } = req.query;
+
     if (id) {
       help = await HelpOrder.findAll({
         where: { id },
+        include: [
+          {
+            model: Student,
+            as: 'student',
+            attributes: ['name', 'email', 'peso', 'idade', 'altura'],
+          },
+        ],
+      });
+    } else if (page) {
+      help = await HelpOrder.findAll({
+        limit: 2,
+        offset: (page - 1) * 2,
         include: [
           {
             model: Student,

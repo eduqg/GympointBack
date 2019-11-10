@@ -82,20 +82,42 @@ class RegistrationsController {
   }
 
   async index(req, res) {
-    const allRegistrations = await Registration.findAll({
-      include: [
-        {
-          model: Plan,
-          as: 'plan',
-          attributes: ['id', 'title', 'duration', 'price']
-        },
-        {
-          model: Student,
-          as: 'student',
-          attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
-        }
-      ]
-    });
+    const { page } = req.query;
+    let allRegistrations = [];
+
+    if (page) {
+      allRegistrations = await Registration.findAll({
+        limit: 2,
+        offset: (page - 1) * 2,
+        include: [
+          {
+            model: Plan,
+            as: 'plan',
+            attributes: ['id', 'title', 'duration', 'price']
+          },
+          {
+            model: Student,
+            as: 'student',
+            attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
+          }
+        ]
+      });
+    } else {
+      allRegistrations = await Registration.findAll({
+        include: [
+          {
+            model: Plan,
+            as: 'plan',
+            attributes: ['id', 'title', 'duration', 'price']
+          },
+          {
+            model: Student,
+            as: 'student',
+            attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
+          }
+        ]
+      });
+    }
 
     const registrations = allRegistrations.map(registration => {
       isBefore(registration.end_date, new Date())
