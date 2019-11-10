@@ -24,10 +24,11 @@ routes.post('/users', UserController.store);
 routes.put('/users', UserController.update);
 
 // Alunos
+routes.get('/students(/:id)?', StudentController.index);
 routes.post('/students', StudentController.store);
 routes.put('/students/:id', StudentController.update);
-routes.get('/students', StudentController.index);
 routes.get('/students/:id/checkins', StudentController.checkins);
+routes.delete('/students', StudentController.delete);
 
 // Planos
 routes.get('/plans(/:id)?', PlansController.index);
@@ -48,7 +49,7 @@ routes.get('/checkins', CheckinsController.index);
 
 // Help Orders
 routes.post('/help-orders/:id/answer', HelpOrdersController.store_answer);
-routes.get('/help-orders', HelpOrdersController.index);
+routes.get('/help-orders(/:id)?', HelpOrdersController.index);
 routes.get(
   '/help-orders-not-answered',
   HelpOrdersController.index_not_answered

@@ -1,7 +1,6 @@
 import Sequelize from 'sequelize';
 import * as Yup from 'yup';
-import { startOfDate, subDays, parseISO, isBefore, format, subHours, addMonths, parseFromTimeZone } from 'date-fns';
-import { format } from 'date-fns-tz';
+
 import Student from '../models/Student';
 import Checkin from '../models/Checkin';
 
@@ -52,10 +51,17 @@ class StudentController {
   }
 
   async index(req, res) {
+    const { id } = req.params;
     const name = req.query.q;
+
+    if (id) {
+      const data = await Student.findByPk(id);
+      return res.json(data);
+    }
+
     const students = await (name
       ? Student.findAll({ where: { name: { [Sequelize.Op.iLike]: name } } })
-      : Student.findAll())
+      : Student.findAll());
 
     return res.json(students);
   }
@@ -94,10 +100,17 @@ class StudentController {
     const student = await Student.findByPk(id);
 
     const checkins = await Checkin.findAll({
-      where: { student_id: student.id, }
+      where: { student_id: student.id },
     });
 
     return res.json(checkins);
+  }
+
+  async delete(req, res) {
+    const { id } = req.headers;
+    const response = await Student.destroy({ where: { id } });
+
+    return res.json(response);
   }
 }
 

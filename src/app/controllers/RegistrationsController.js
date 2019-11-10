@@ -22,15 +22,7 @@ class RegistrationsController {
     }
 
     const { start_date, student_id, plan_id } = req.body;
-    console.log('----------------');
-    console.log(start_date);
     const received_date = parseISO(start_date);
-
-    // format(start_date, "yyyy-MM-dd'T'hh:mm:ss", {
-    //   timeZone: 'America/Sao_Paulo'
-    // });
-    console.log(received_date);
-    console.log('----------------');
 
     const planRegistered = await Registration.findOne({
       where: { student_id: student_id }

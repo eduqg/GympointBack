@@ -22,10 +22,6 @@ class PlansController {
     return res.json(data);
   }
 
-  async getone(req, res) {
-    return res.json(plan);
-  }
-
   async store(req, res) {
     const schema = Yup.object().shape({
       title: Yup.string().required(),

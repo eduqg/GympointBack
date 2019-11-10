@@ -1,14 +1,13 @@
 import * as Yup from 'yup';
 import { format } from 'date-fns-tz';
 
+import pt from 'date-fns/locale/pt-BR';
 import Student from '../models/Student';
 import HelpOrder from '../models/HelpOrder';
 
 import Mail from '../../lib/Mail';
-import pt from 'date-fns/locale/pt-BR';
 
 class HelpOrdersController {
-
   // POST https://gympoint.com/students/3/help-orders
   async store_question(req, res) {
     const schema = Yup.object().shape({
@@ -60,7 +59,7 @@ class HelpOrdersController {
 
     await helpOrder.save();
 
-    const student = await Student.findByPk(id);
+    const student = await Student.findByPk(helpOrder.student_id);
 
     await Mail.sendMail({
       to: `${student.name} <${student.email}>`,
@@ -78,11 +77,39 @@ class HelpOrdersController {
       },
     });
 
-    return res.json(response);
+    return res.json(response.data);
   }
 
   async index(req, res) {
-    const help = await HelpOrder.findAll();
+    let help = [];
+    const { id } = req.params;
+    if (id) {
+      help = await HelpOrder.findAll({
+        where: { id },
+        include: [
+          {
+            model: Student,
+            as: 'student',
+            attributes: ['name', 'email', 'peso', 'idade', 'altura'],
+          },
+        ],
+      });
+    } else {
+      help = await HelpOrder.findAll({
+        include: [
+          {
+            model: Student,
+            as: 'student',
+            attributes: ['name', 'email', 'peso', 'idade', 'altura'],
+          },
+        ],
+      });
+    }
+
+    if (!help[0]) {
+      return res.status(400).json({ error: "Help order doesn't exist." });
+    }
+
     return res.json(help);
   }
 
@@ -92,10 +119,11 @@ class HelpOrdersController {
   }
 
   async questions_student(req, res) {
-    const help = await HelpOrder.findAll({ where: { student_id: req.params.id } });
+    const help = await HelpOrder.findAll({
+      where: { student_id: req.params.id },
+    });
     return res.json(help);
   }
-
 }
 
 export default new HelpOrdersController();
