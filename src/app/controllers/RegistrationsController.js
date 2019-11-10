@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { startOfDate, parseISO, isBefore, format, subHours, addMonths, parseFromTimeZone, setHours, setMinutes } from 'date-fns';
+import { parseISO, isBefore, addMonths, setHours, setMinutes } from 'date-fns';
 import { format } from 'date-fns-tz';
 import pt from 'date-fns/locale/pt-BR';
 import Registration from '../models/Registration';
@@ -22,33 +22,40 @@ class RegistrationsController {
     }
 
     const { start_date, student_id, plan_id } = req.body;
-    const received_date = parseISO(start_date);
 
     const planRegistered = await Registration.findOne({
-      where: { student_id: student_id }
+      where: { student_id },
     });
 
     // Verifica se plano foi criado para começar numa data passada
-    if (isBefore(parseISO(start_date), setMinutes(setHours(new Date(), 0), 0))) {
-      return res.status(400).json({ error: 'Cannot create one registration to start in the past.' });
+    if (
+      isBefore(parseISO(start_date), setMinutes(setHours(new Date(), 0), 0))
+    ) {
+      return res.status(400).json({
+        error: 'Cannot create one registration to start in the past.',
+      });
     }
 
     // Verifica se usuário já possui algum registro
     if (planRegistered) {
       // Verifica se plano está ativo
       if (isBefore(new Date(), planRegistered.end_date)) {
-        return res.status(400).json({ error: 'Student already registrated in an active plan.' });
-      } else {
-        console.log('Plano ja passou a data de termino, pode ser criado um novo plano.');
+        return res
+          .status(400)
+          .json({ error: 'Student already registrated in an active plan.' });
       }
-    };
+      // eslint-disable-next-line no-console
+      console.log(
+        'Plano ja passou a data de termino, pode ser criado um novo plano.'
+      );
+    }
 
     const plan = await Plan.findByPk(plan_id);
     const price_calculated = plan.duration * plan.price;
 
     let end_date_calculated = addMonths(parseISO(start_date), plan.duration);
     end_date_calculated = format(end_date_calculated, "yyyy-MM-dd'T'hh:mm:ss", {
-      timeZone: 'America/Sao_Paulo'
+      timeZone: 'America/Sao_Paulo',
     });
 
     const registration = await Registration.create({
@@ -74,7 +81,6 @@ class RegistrationsController {
           { locale: pt }
         ),
         price: registration.price,
-
       },
     });
 
@@ -93,14 +99,14 @@ class RegistrationsController {
           {
             model: Plan,
             as: 'plan',
-            attributes: ['id', 'title', 'duration', 'price']
+            attributes: ['id', 'title', 'duration', 'price'],
           },
           {
             model: Student,
             as: 'student',
-            attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
-          }
-        ]
+            attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura'],
+          },
+        ],
       });
     } else {
       allRegistrations = await Registration.findAll({
@@ -108,21 +114,19 @@ class RegistrationsController {
           {
             model: Plan,
             as: 'plan',
-            attributes: ['id', 'title', 'duration', 'price']
+            attributes: ['id', 'title', 'duration', 'price'],
           },
           {
             model: Student,
             as: 'student',
-            attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
-          }
-        ]
+            attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura'],
+          },
+        ],
       });
     }
 
     const registrations = allRegistrations.map(registration => {
-      isBefore(registration.end_date, new Date())
-        ? registration.active = false
-        : registration.active = true;
+      registration.active = !isBefore(registration.end_date, new Date());
 
       return registration;
     });
@@ -137,20 +141,18 @@ class RegistrationsController {
         {
           model: Plan,
           as: 'plan',
-          attributes: ['id', 'title', 'duration', 'price']
+          attributes: ['id', 'title', 'duration', 'price'],
         },
         {
           model: Student,
           as: 'student',
-          attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura']
-        }
-      ]
+          attributes: ['id', 'name', 'email', 'peso', 'idade', 'altura'],
+        },
+      ],
     });
 
     const registrations = allRegistrations.map(registration => {
-      isBefore(registration.end_date, new Date())
-        ? registration.active = false
-        : registration.active = true;
+      registration.active = !isBefore(registration.end_date, new Date());
 
       return registration;
     });
@@ -171,21 +173,24 @@ class RegistrationsController {
       return res.status(400).json({ error: 'Validation schema fails.' });
     }
 
-
     const { start_date, student_id, plan_id } = req.body;
 
     const register = await Registration.findByPk(req.params.id);
     // Verifica se usuário já possui algum registro
     if (!register) {
-      return res.status(400).json({ error: 'Does not exist this registration' });
-    };
+      return res
+        .status(400)
+        .json({ error: 'Does not exist this registration' });
+    }
 
     // if (req.body.student_id !== register.student_id) {
     //   return res.status(400).json({ error: 'Cannot update register of another user.' });
     // }
 
     if (isBefore(parseISO(start_date), new Date())) {
-      return res.status(400).json({ error: 'Cannot update one registration to start before today.' });
+      return res.status(400).json({
+        error: 'Cannot update one registration to start before today.',
+      });
     }
 
     const plan = await Plan.findByPk(plan_id);
@@ -193,7 +198,7 @@ class RegistrationsController {
 
     let end_date_calculated = addMonths(parseISO(start_date), plan.duration);
     end_date_calculated = format(end_date_calculated, "yyyy-MM-dd'T'hh:mm:ss", {
-      timeZone: 'America/Sao_Paulo'
+      timeZone: 'America/Sao_Paulo',
     });
 
     const registration = await register.update({
