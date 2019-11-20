@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
 import * as Yup from 'yup';
+import { isBefore, subDays } from 'date-fns';
 
 import Student from '../models/Student';
 import Checkin from '../models/Checkin';
@@ -78,6 +79,20 @@ class StudentController {
     return res.json(students);
   }
 
+  async studentSign(req, res) {
+    const { name } = req.body;
+
+    if (name) {
+      const studentExists = await Student.findOne({ where: { name } });
+
+      if (studentExists) {
+        return res.json(studentExists);
+      }
+    }
+
+    return res.status(400).json({ error: 'Student not found.' });
+  }
+
   async update(req, res) {
     const { id } = req.params;
     const { email } = req.body;
@@ -111,11 +126,21 @@ class StudentController {
 
     const student = await Student.findByPk(id);
 
-    const checkins = await Checkin.findAll({
+    const allCheckins = await Checkin.findAll({
       where: { student_id: student.id },
     });
 
-    return res.json(checkins);
+    const todayMinusSeven = subDays(new Date(), 7);
+    let numberCheckins = 0;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key in allCheckins) {
+      if (isBefore(todayMinusSeven, allCheckins[key].createdAt)) {
+        numberCheckins++;
+      }
+    }
+
+    return res.json({ allCheckins, numberCheckins });
   }
 
   async delete(req, res) {
