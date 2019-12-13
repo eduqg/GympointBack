@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 
 module.exports = {
   up: QueryInterface => {
@@ -18,5 +18,7 @@ module.exports = {
     );
   },
 
-  down: () => {},
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.bulkDelete('users', null, {});
+  },
 };

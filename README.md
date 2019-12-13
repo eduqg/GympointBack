@@ -1,10 +1,45 @@
 
 
 
-# Backend da aplicação Gympoint
+# Backend da aplicação Gympoint em Node.js
 
 Parte do desafio final do curso Gostack 9 - Bootcamp Rocketseat.
 
+## Para executar o projeto
+
+Instale as dependências do projeto.
+
+```console
+yarn
+```
+
+Faça a configuração do banco de dados PostgreSQL.
+
+Com o docker, crie um container do banco de dados e execute-o na porta de sua preferencia.
+
+```console
+docker run --name database -e POSTGRES_PASSWORD=docker -p 5433:5432 -d postgres:11
+
+docker start database
+```
+
+Crie no seu banco de dados um database chamado gympoint. Pode ser usado um programa como o Postbird ou o DBeaver para esta finalidade.
+
+Configure o arquivo src/config/database.js com as variáveis definidas do seu banco de dados.
+
+Crie dados ficctícios no banco de dados com as seeds pré-definidas.
+
+```console
+yarn sequelize db:seed:all
+```
+
+Execute a aplicação.
+
+```console
+yarn dev
+```
+
+Com o backend configurado é possível acessar dados no [frontend em ReactJS](https://github.com/eduqg/GympointFront) e no [app mobile em React Native](https://github.com/eduqg/GympointReactNative) disponíveis no github.
 
 ## Comandos Utilizados
 
