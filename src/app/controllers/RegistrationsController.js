@@ -95,6 +95,7 @@ class RegistrationsController {
       allRegistrations = await Registration.findAll({
         limit: 5,
         offset: (page - 1) * 5,
+        order: [['updatedAt', 'DESC']],
         include: [
           {
             model: Plan,
@@ -110,6 +111,7 @@ class RegistrationsController {
       });
     } else {
       allRegistrations = await Registration.findAll({
+        order: [['updatedAt', 'DESC']],
         include: [
           {
             model: Plan,
@@ -187,7 +189,9 @@ class RegistrationsController {
     //   return res.status(400).json({ error: 'Cannot update register of another user.' });
     // }
 
-    if (isBefore(parseISO(start_date), new Date())) {
+    if (
+      isBefore(parseISO(start_date), setMinutes(setHours(new Date(), 0), 0))
+    ) {
       return res.status(400).json({
         error: 'Cannot update one registration to start before today.',
       });

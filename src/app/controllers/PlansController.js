@@ -12,6 +12,7 @@ class PlansController {
       data = await Plan.findAll({
         where: { id },
       });
+
       return res.json(data);
     }
 
@@ -19,11 +20,13 @@ class PlansController {
       data = await Plan.findAll({
         limit: 5,
         offset: (page - 1) * 5,
+        order: [['updatedAt', 'DESC']],
       });
+
       return res.json(data);
     }
 
-    data = await Plan.findAll();
+    data = await Plan.findAll({ order: [['updatedAt', 'DESC']] });
 
     if (!data[0]) {
       return res.status(400).json({ error: "Plano doesn't exist." });

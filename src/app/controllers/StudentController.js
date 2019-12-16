@@ -67,13 +67,16 @@ class StudentController {
         where: {},
         limit: 5,
         offset: (page - 1) * 5,
+        order: [['updatedAt', 'DESC']],
       });
     } else if (name) {
       students = await Student.findAll({
         where: { name: { [Sequelize.Op.iLike]: name } },
       });
     } else {
-      students = await Student.findAll();
+      students = await Student.findAll({
+        order: [['updatedAt', 'DESC']],
+      });
     }
 
     return res.json(students);
