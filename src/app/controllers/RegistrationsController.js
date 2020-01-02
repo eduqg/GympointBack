@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { parseISO, isBefore, addMonths, setHours, setMinutes } from 'date-fns';
 import { format } from 'date-fns-tz';
 import pt from 'date-fns/locale/pt-BR';
@@ -9,18 +8,6 @@ import Mail from '../../lib/Mail';
 
 class RegistrationsController {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      start_date: Yup.date().required(),
-      end_date: Yup.date(),
-      price: Yup.number(),
-      student_id: Yup.number().required(),
-      plan_id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation schema fails.' });
-    }
-
     const { start_date, student_id, plan_id } = req.body;
 
     const planRegistered = await Registration.findOne({
@@ -163,18 +150,6 @@ class RegistrationsController {
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      start_date: Yup.date().required(),
-      end_date: Yup.date(),
-      price: Yup.number(),
-      student_id: Yup.number().required(),
-      plan_id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation schema fails.' });
-    }
-
     const { start_date, student_id, plan_id } = req.body;
 
     const register = await Registration.findByPk(req.params.id);
@@ -184,10 +159,6 @@ class RegistrationsController {
         .status(400)
         .json({ error: 'Does not exist this registration' });
     }
-
-    // if (req.body.student_id !== register.student_id) {
-    //   return res.status(400).json({ error: 'Cannot update register of another user.' });
-    // }
 
     if (
       isBefore(parseISO(start_date), setMinutes(setHours(new Date(), 0), 0))

@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { isBefore, subDays } from 'date-fns';
 
 import Student from '../models/Student';
@@ -6,17 +5,6 @@ import Checkin from '../models/Checkin';
 
 class CheckinsController {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      student_id: Yup.number()
-        .required()
-        .integer()
-        .positive(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails.' });
-    }
-
     const checkStudent = await Student.findByPk(req.body.student_id);
     if (!checkStudent) {
       return res.status(400).json({ error: 'Student not found to checkin.' });
@@ -32,6 +20,7 @@ class CheckinsController {
     // eslint-disable-next-line no-restricted-syntax
     for (const key in checkins) {
       if (isBefore(todayMinusSeven, checkins[key].createdAt)) {
+        // eslint-disable-next-line no-plusplus
         number_checkins++;
       }
     }

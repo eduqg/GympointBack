@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { format } from 'date-fns-tz';
 
 import pt from 'date-fns/locale/pt-BR';
@@ -10,14 +9,6 @@ import Mail from '../../lib/Mail';
 class HelpOrdersController {
   // POST https://gympoint.com/students/3/help-orders
   async store_question(req, res) {
-    const schema = Yup.object().shape({
-      question: Yup.string().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails.' });
-    }
-
     const { question } = req.body;
     const { id } = req.params;
 
@@ -36,14 +27,6 @@ class HelpOrdersController {
 
   // POST https://gympoint.com/help-orders/1/answer
   async store_answer(req, res) {
-    const schema = Yup.object().shape({
-      answer: Yup.string().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails.' });
-    }
-
     const { answer } = req.body;
     const { id } = req.params;
 
