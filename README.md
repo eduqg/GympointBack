@@ -25,7 +25,11 @@ docker start database
 
 Crie no seu banco de dados um database chamado gympoint. Pode ser usado um programa como o Postbird ou o DBeaver para esta finalidade.
 
-Configure o arquivo src/config/database.js com as variáveis definidas do seu banco de dados.
+Copie o arquivo .env-example para .env e adicione as variáveis necessárias.
+
+```console
+cp .env-example .env
+```
 
 Crie dados ficctícios no banco de dados com as seeds pré-definidas.
 
