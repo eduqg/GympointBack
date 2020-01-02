@@ -313,3 +313,9 @@ Para fazer requests nos testes.
 ```console
 yarn add supertest -D
 ```
+
+Para dados fake.
+
+```console
+yarn add factory-girl faker -D
+```

@@ -2,7 +2,7 @@ import request from 'supertest';
 import bcrypt from 'bcryptjs';
 import app from '../../src/app';
 
-import User from '../../src/app/models/User';
+import factory from '../factories';
 import truncate from '../util/truncate';
 
 describe('User', () => {
@@ -11,9 +11,7 @@ describe('User', () => {
   });
 
   it('should encrypt user password when new user created', async () => {
-    const user = await User.create({
-      name: 'Eduardo Gomes',
-      email: 'edu@gympoint.com',
+    const user = await factory.create('User', {
       password: '123123132',
     });
 
@@ -23,32 +21,25 @@ describe('User', () => {
   });
 
   it('should be able to register', async () => {
+    // Attrs apenas retorna atributos de usuário
+    const user = await factory.attrs('User');
+
     const response = await request(app)
       .post('/users')
-      .send({
-        name: 'Eduardo Gomes',
-        email: 'edu@gympoint.com',
-        password: '123123132',
-      });
+      .send(user);
 
     expect(response.body).toHaveProperty('id');
   });
 
   it('should not be able to register with duplicated email', async () => {
+    const user = await factory.attrs('User');
+
     await request(app)
       .post('/users')
-      .send({
-        name: 'Eduardo Gomes',
-        email: 'edu@gympoint.com',
-        password: '123123132',
-      });
+      .send(user);
     const response = await request(app)
       .post('/users')
-      .send({
-        name: 'Eduardo Gomes',
-        email: 'edu@gympoint.com',
-        password: '123123132',
-      });
+      .send(user);
 
     expect(response.status).toBe(400);
   });
