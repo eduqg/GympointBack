@@ -11,16 +11,16 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: 'students', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
         allowNull: true,
       },
       question: {
         type: Sequelize.TEXT,
-        allowNull:true,
+        allowNull: true,
       },
       answer: {
         type: Sequelize.TEXT,
-        allowNull:true,
+        allowNull: true,
       },
       answer_at: {
         type: Sequelize.DATE,
@@ -39,5 +39,5 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('help_orders');
-  }
+  },
 };

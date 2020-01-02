@@ -304,7 +304,12 @@ yarn add date-fns@next
 ### Para testes
 
 ```console
-  yarn add jest @sucrase/jest-plugin @types/jest -D
+  yarn add jest @sucrase/jest-plugin @types/jest sqlite3 -D
   yarn jest --init
+```
 
+Para fazer requests nos testes.
+
+```console
+yarn add supertest -D
 ```
