@@ -45,6 +45,18 @@ yarn dev
 
 Com o backend configurado é possível acessar dados no [frontend em ReactJS](https://github.com/eduqg/GympointFront) e no [app mobile em React Native](https://github.com/eduqg/GympointReactNative) disponíveis no github.
 
+Para testes, copiar o seguinte arquivo e setar variáveis.
+
+```console
+cp .env.test-example .env.test
+```
+
+Executar testes com jest.
+
+```console
+yarn test
+```
+
 ## Comandos Utilizados
 
 
@@ -287,4 +299,12 @@ Usar versão mais atual.
 
 ```console
 yarn add date-fns@next
+```
+
+### Para testes
+
+```console
+  yarn add jest @sucrase/jest-plugin @types/jest -D
+  yarn jest --init
+
 ```

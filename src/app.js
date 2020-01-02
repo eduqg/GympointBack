@@ -1,5 +1,5 @@
 /* Classe responsável por configurar middlewares e rotas de requisição */
-import 'dotenv/config';
+import './bootstrap';
 import express from 'express';
 import cors from 'cors';
 import routes from './routes';
