@@ -6,6 +6,12 @@ import HelpOrder from '../models/HelpOrder';
 
 import Mail from '../../lib/Mail';
 
+const includeStudent = {
+  model: Student,
+  as: 'student',
+  attributes: ['name', 'email', 'peso', 'idade', 'altura'],
+};
+
 class HelpOrdersController {
   // POST https://gympoint.com/students/3/help-orders
   async store_question(req, res) {
@@ -71,35 +77,17 @@ class HelpOrdersController {
     if (id) {
       help = await HelpOrder.findAll({
         where: { id },
-        include: [
-          {
-            model: Student,
-            as: 'student',
-            attributes: ['name', 'email', 'peso', 'idade', 'altura'],
-          },
-        ],
+        include: [includeStudent],
       });
     } else if (page) {
       help = await HelpOrder.findAll({
         limit: 2,
         offset: (page - 1) * 2,
-        include: [
-          {
-            model: Student,
-            as: 'student',
-            attributes: ['name', 'email', 'peso', 'idade', 'altura'],
-          },
-        ],
+        include: [includeStudent],
       });
     } else {
       help = await HelpOrder.findAll({
-        include: [
-          {
-            model: Student,
-            as: 'student',
-            attributes: ['name', 'email', 'peso', 'idade', 'altura'],
-          },
-        ],
+        include: [includeStudent],
       });
     }
 

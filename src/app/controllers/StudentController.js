@@ -1,8 +1,9 @@
-import Sequelize from 'sequelize';
 import { isBefore, subDays } from 'date-fns';
 
 import Student from '../models/Student';
 import Checkin from '../models/Checkin';
+
+import ListStudentsService from '../services/ListStudentsService';
 
 class StudentController {
   async store(req, res) {
@@ -32,29 +33,12 @@ class StudentController {
     const { page } = req.query;
     const { id } = req.params;
     const name = req.query.q;
-    let students = [];
 
-    if (id) {
-      const data = await Student.findByPk(id);
-      return res.json(data);
-    }
-
-    if (page) {
-      students = await Student.findAll({
-        where: {},
-        limit: 5,
-        offset: (page - 1) * 5,
-        order: [['updatedAt', 'DESC']],
-      });
-    } else if (name) {
-      students = await Student.findAll({
-        where: { name: { [Sequelize.Op.iLike]: name } },
-      });
-    } else {
-      students = await Student.findAll({
-        order: [['updatedAt', 'DESC']],
-      });
-    }
+    const students = await ListStudentsService.run({
+      page,
+      student_id: id,
+      name,
+    });
 
     return res.json(students);
   }

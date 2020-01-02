@@ -1,36 +1,22 @@
 import Plan from '../models/Plan';
 
+import ListPlanService from '../services/ListPlanService';
+
 class PlansController {
   async index(req, res) {
-    let data = [];
-    const { id } = req.params;
-    const { page } = req.query;
+    try {
+      const { id } = req.params;
+      const { page } = req.query;
 
-    if (id) {
-      data = await Plan.findAll({
-        where: { id },
+      const plans = await ListPlanService.run({
+        plan_id: id,
+        page,
       });
 
-      return res.json(data);
+      return res.json(plans);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
-
-    if (page) {
-      data = await Plan.findAll({
-        limit: 5,
-        offset: (page - 1) * 5,
-        order: [['updatedAt', 'DESC']],
-      });
-
-      return res.json(data);
-    }
-
-    data = await Plan.findAll({ order: [['updatedAt', 'DESC']] });
-
-    if (!data[0]) {
-      return res.status(400).json({ error: "Plano doesn't exist." });
-    }
-
-    return res.json(data);
   }
 
   async store(req, res) {
