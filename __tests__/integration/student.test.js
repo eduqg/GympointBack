@@ -98,4 +98,22 @@ describe('Student', () => {
 
     expect(response.status).toBe(200);
   });
+
+  it('should return student checkins', async () => {
+    // /students/:id/checkins
+    const { id } = await factory.create('Student');
+
+    await request(app)
+      .post('/checkins')
+      .send({ student_id: id });
+
+    await request(app)
+      .post('/checkins')
+      .send({ student_id: id });
+
+    const response = await request(app).get(`/students/${id}/checkins`);
+
+    expect(response.body).toHaveProperty('allCheckins');
+    expect(response.body).toHaveProperty('numberCheckins');
+  });
 });
