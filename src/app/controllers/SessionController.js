@@ -18,7 +18,7 @@ class SessionController {
 
     // Verifica senha
     if (!(await user.checkPassword(password))) {
-      return res.status(401).jaon({ error: 'Password does not match' });
+      return res.status(401).json({ error: 'Password does not match' });
     }
 
     const { id, name, admin } = user;
